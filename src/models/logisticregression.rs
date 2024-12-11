@@ -24,8 +24,10 @@ impl Model {
     // performance tracking
     // cost is low when predictions are accurate (probabilities close to actual labels)
     // vice versa for high cost
-    pub fn _cost(&self, x: &Vec<Vec<f64>>, y: &Vec<f64>, weights: &Vec<f64>) -> f64 {
+    pub fn eval(&self, x: &Vec<Vec<f64>>, y: &Vec<f64>, weights: &Vec<f64>) -> (f64, f64) {
         let m: f64 = y.len() as f64;
+
+        let mut correct: f64 = 0.0;
         let mut cost: f64 = 0.0;
 
         for i in 0..y.len() {
@@ -34,12 +36,19 @@ impl Model {
             for j in 0..weights.len() { // dot product
                 z += x[i][j] * weights[j];
             }
-
+        
             let prediction: f64 = Self::sigmoid(z);
-            cost += y[i] * prediction.ln() + (1.0 - y[i]) * (1.0 - prediction).ln();
+
+            println!("Prediction {} (Actual: {}): {}", i, y[i], prediction);
+            if prediction.round() as u8 == y[i] as u8{
+                correct += 1.0;
+            }
+
+            let epsilon: f64 = 1e-12;
+            cost += y[i] * (prediction + epsilon).ln() + (1.0 - y[i]) * (1.0 - prediction + epsilon).ln();
         }
 
-        -cost / m
+        (-cost / m, correct * 100.0 / m )
     }
 
     pub fn gradientdescent(&mut self, learningrate: f64, iterations: usize) -> Vec<f64>{

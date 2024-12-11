@@ -8,11 +8,13 @@ mod parsedata;
 
 fn main() -> Result<(), Box<dyn Error>> {
 
-    let (x, y)  = parsedata::penguinscsv()?;
-    let mut model: Model = models::logisticregression::Model::new(x, y);
+    let (x0, y0, x1, y1)  = parsedata::penguinscsv(0.7)?;
+    let mut model: Model = models::logisticregression::Model::new(x0.clone(), y0.clone());
     let weights: Vec<f64> = model.gradientdescent(0.1, 10000);
 
-    println!("Weights: {:?}\n", weights);
+    let (cost, accuracy) = model.eval(&x1, &y1, &weights);
+
+    println!("Weights: {:?}\nCost: {}\nAccuracy: {}%\n", weights, cost, accuracy);
 
     // inputting new penguin data from user
     println!("INPUT: culmen_length_mm culmen_depth_mm flipper_length_mm body_mass_g");
@@ -28,6 +30,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let guess: Vec<u8> = model.predict(&container, &weights);
     println!("{:?}", guess);
+
+
 
     Ok(())
 }
