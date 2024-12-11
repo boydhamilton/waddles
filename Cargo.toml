@@ -1,6 +1,7 @@
 [package]
-name = "brh-regression"
+name = "brh-learning"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+csv = "1.1"

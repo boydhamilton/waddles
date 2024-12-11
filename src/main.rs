@@ -1,30 +1,35 @@
 
-// https://dafriedman97.github.io/mlbook/content/c7/concept.html
+// https://www.kaggle.com/code/parulpandey/penguin-dataset-the-new-iris/input?select=penguins_size.csv
 
-// i need the penguins. find a way to do data parsing
-// https://www.kaggle.com/code/parulpandey/penguin-dataset-the-new-iris
+use models::logisticregression::Model;
+use std::error::Error;
+use std::io;
 
 mod models;
+mod parsedata;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
 
-    let x = vec![
-        vec![1.0, 1.0, 2.0],
-        vec![1.0, 2.0, 3.0],
-        vec![1.0, 3.0, 4.0],
-        vec![1.0, 4.0, 5.0],
-        vec![1.0, 5.0, 6.0],
-    ];
-    let y = vec![0.0, 0.0, 1.0, 1.0, 1.0]; // labels
+    let (x, y)  = parsedata::penguinscsv()?;
+    let mut model: Model = models::logisticregression::Model::new(x, y);
+    let weights: Vec<f64> = model.gradientdescent(0.1, 10000);
 
-    let mut model = models::logisticregression::Model::new(x[0..3].to_vec(), y[0..3].to_vec());
+    println!("{:?}\n", weights);
 
-    // train using gd
-    let trained_weights = model.gradientdescent(0.1, 1000);
+    // inputting new penguin data from user
+    println!("INPUT: culmen_length_mm culmen_depth_mm flipper_length_mm body_mass_g");
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("ruh roh");
 
-    println!("Trained weights: {:?}", trained_weights);
+    let pengdata: Vec<f64> = input.split_whitespace()
+    .map(|s| s.parse().expect("nan"))
+    .collect();
 
+    let container: Vec<Vec<f64>> = vec![pengdata];
 
-    let predictions = model.predict(&x[3..].to_vec(), &trained_weights);
-    println!("Predictions: {:?}", predictions);
+    let guess: Vec<u8> = model.predict(&container, &weights);
+    println!("{:?}", guess);
+
+    Ok(())
 }
+
