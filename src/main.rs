@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("Weights: {:?}\nCost: {}\nAccuracy: {}%\n", weights, cost, accuracy);
 
     // inputting new penguin data from user
-    println!("INPUT: culmen_length_mm culmen_depth_mm flipper_length_mm body_mass_g");
+    println!("INPUT: culmen_length_mm culmen_depth_mm flipper_length_mm body_mass_g ");
     let mut input = String::new();
     io::stdin().read_line(&mut input).expect("ruh roh");
 
