@@ -44,7 +44,7 @@ impl Model {
                 correct += 1.0;
             }
 
-            let epsilon: f64 = 1e-12;
+            let epsilon: f64 = 0.0;//1e-12;
             cost += y[i] * (prediction + epsilon).ln() + (1.0 - y[i]) * (1.0 - prediction + epsilon).ln();
         }
 

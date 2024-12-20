@@ -6,6 +6,7 @@ use std::error::Error;
 use rand::seq::SliceRandom;
 
 
+// TODO: for peng, take equal number from both species, random doesnt guarentee both will be trained equally
 fn shuffled(x: &mut Vec<Vec<f64>>, y: &mut Vec<f64>, rng: &mut rand::rngs::ThreadRng) {
     // python esque line of code
     let mut combined: Vec<(Vec<f64>, f64)> = x.iter().cloned().zip(y.iter().cloned()).collect();
@@ -24,12 +25,7 @@ fn splitd(x: &Vec<Vec<f64>>, y: &Vec<f64>, train_size: f64) -> (Vec<Vec<f64>>, V
     let (x0, x1) = x.split_at(train_count);
     let (y0, y1) = y.split_at(train_count);
 
-    let x0 = x0.to_vec();
-    let y0 = y0.to_vec();
-    let x1 = x1.to_vec();
-    let y1 = y1.to_vec();
-
-    (x0, y0, x1, y1)
+    (x0.to_vec(), y0.to_vec(), x1.to_vec(), y1.to_vec())
 }
 
 // return xtrain ytrain xtest ytest
