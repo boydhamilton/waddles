@@ -3,17 +3,17 @@
 use std::f64::consts::E;
 
 
-pub struct Model {
-    datax: Vec<Vec<f64>>,
-    datay: Vec<f64>
+pub struct LModel {
+    x: Vec<Vec<f64>>,
+    y: Vec<f64>
 }
 
-impl Model {
+impl LModel {
 
     pub fn new(inputx: Vec<Vec<f64>>, inputy: Vec<f64>) -> Self{
         Self{
-            datax: inputx,
-            datay: inputy
+            x: inputx,
+            y: inputy
         }
     }
 
@@ -44,7 +44,7 @@ impl Model {
                 correct += 1.0;
             }
 
-            let epsilon: f64 = 0.0;//1e-12;
+            let epsilon: f64 = 1e-12;
             cost += y[i] * (prediction + epsilon).ln() + (1.0 - y[i]) * (1.0 - prediction + epsilon).ln();
         }
 
@@ -52,12 +52,13 @@ impl Model {
     }
 
     pub fn gradientdescent(&mut self, learningrate: f64, iterations: usize) -> Vec<f64>{
-        let m: f64 = self.datay.len() as f64;
 
-        let mut weights: Vec<f64> = vec![0.0; self.datax[0].len()];
+        let m: f64 = self.y.len() as f64;
 
-        let x: &Vec<Vec<f64>> = &self.datax;
-        let y: &Vec<f64> = &self.datay;
+        let mut weights: Vec<f64> = vec![0.0; self.x[0].len()];
+
+        let x: &Vec<Vec<f64>> = &self.x;
+        let y: &Vec<f64> = &self.y;
 
         for _ in 0..iterations {
             let mut gradients: Vec<f64> = vec![0.0; weights.len()];

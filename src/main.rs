@@ -1,42 +1,42 @@
 
-use models::logisticregression::Model;
 use std::error::Error;
-use std::io;
 
 mod models;
 mod parsedata;
 
 fn main() -> Result<(), Box<dyn Error>> {
 
-    let (x0, y0, x1, y1)  = parsedata::penguinscsv(0.8)?;
-    let mut model: Model = models::logisticregression::Model::new(x0.clone(), y0.clone());
-    let weights: Vec<f64> = model.gradientdescent(0.1, 1000);
+    let (x0, y0, x1, y1)  = parsedata::penguinscsv(0.3)?;
 
-    let (cost, accuracy) = model.eval(&x1, &y1, &weights);
+    // let mut model: Model = models::logisticregression::LModel::new(x0.clone(), y0.clone());
+    // let weights: Vec<f64> = model.gradientdescent(0.1, 1000);
 
-    println!("Weights: {:?}\nCost: {}\nAccuracy: {}%\n", weights, cost, accuracy);
+    // let (cost, accuracy) = model.eval(&x1, &y1, &weights);
+    
+    // println!("Weights: {:?}\nCost: {}\nAccuracy: {}%\n", weights, cost, accuracy);
 
-    // inputting new penguin data from user
-    // println!("INPUT: culmen_length_mm culmen_depth_mm flipper_length_mm body_mass_g");
-    // let mut input = String::new();
-    // io::stdin().read_line(&mut input).expect("ruh roh");
+    let mut model = models::projection::PModel::new(x0.clone(), y0.clone());
 
-    // let pengdata: Vec<f64> = input
-    //     .split_whitespace()
-    //     .map(|s| s.parse().expect("nan"))
-    //     .collect();
+    model.weights();
 
-    // let container: Vec<Vec<f64>> = vec![pengdata];
+    
+    let mut score = 0;
 
-    // let guess: Vec<u8> = model.predict(&container, &weights);
+    // zero is adelie, one is gentoo
+    for i in 0..x1.len() {
+        let guess = model.eval(&x1[i]);
+        let ans = if guess[0] > guess[1] {0} else {1};
+        println!("Model answer: {}", ans);
+        println!("With confidence {}", (guess[0] - guess[1] + 0.999).abs()*100.0);
+        print!("\n");
+        if ans == y1[i] as i32 {
+            score += 1;
+        }
+    }
+    
+    let per = score as f64 / x1.len() as f64 * 100.0;
 
-    // if guess[0] == 0 {
-    //     println!("Adelie");
-    // } 
-    // if guess[0] == 1{
-    //     println!("Gentoo");
-    // }
-
+    println!("Test results, {}/{}\n {}", score, x1.len(), per);
 
     Ok(())
 }
