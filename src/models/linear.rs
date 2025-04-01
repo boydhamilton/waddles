@@ -2,7 +2,7 @@
 
 
 pub struct Model {
-    _datax : Vec<f64>,
+    datax : Vec<f64>,
     datay : Vec<f64>,
     slope : f64
 }
@@ -14,7 +14,7 @@ impl Model {
         let slope = get_slope(&inputx, &inputy);
 
         Self {
-            _datax : inputx,
+            datax : inputx,
             datay : inputy,
             slope
         }
