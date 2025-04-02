@@ -22,14 +22,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     
     let mut score = 0;
 
-    // zero is adelie, one is gentoo
+    // zero is adelie, one is chinstrap, two is gentoo
     for i in 0..x1.len() {
         let guess = model.eval(&x1[i]);
-        let ans = if guess[0] > guess[1] {0} else {1};
-        println!("Model answer: {}", ans);
-        println!("With confidence {}", (guess[0] - guess[1] + 0.999).abs()*100.0);
+
+        let mut anstest = 0.0;
+        let mut bestlabel = 0;
+
+        for i in 0..guess.len() {
+            if guess[i] > anstest {
+                anstest = guess[i];
+                bestlabel = i;
+            }
+        }
+        println!("Model answer: {}", bestlabel);
+        println!("Real answer: {}", y1[i]);
         print!("\n");
-        if ans == y1[i] as i32 {
+        if bestlabel == y1[i] as usize {
             score += 1;
         }
     }
